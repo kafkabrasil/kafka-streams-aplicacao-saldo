@@ -3,7 +3,7 @@ Aplicação de exemplo que usa Kafka Streams para gerenciar o saldo de clientes 
 
 ![diagrama do projeto](./assets/kafka-streams-caso-uso.png)
 
-Precisa de mais informações sobre o projeto ? Acesso o post completo: [[Parte 1] Kafka Streams - Introdução e Caso de Uso]()
+Precisa de mais informações sobre o projeto ? Acesso o post completo: [[Parte 1] Kafka Streams - Introdução e Caso de Uso](https://kafkabrasil.com/kafka-streams-introducao-e-caso-de-uso/)
 
 ### Pré-Requisitos
 
