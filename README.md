@@ -12,6 +12,7 @@ O que você precisa para rodar este projeto ?
 - Docker e Docker Compose
 - Java 17
 - Maven 3.9.9
+- GNU Make
 
 ### Como usar ?
 
