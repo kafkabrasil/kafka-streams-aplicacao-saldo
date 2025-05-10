@@ -18,8 +18,8 @@ O que você precisa para rodar este projeto ?
 
 Usamos `Make` para realizar todas as operações no projeto. Se você digitar `make` na raiz do projeto verá uma lista de comandos disponíveis, mas segue abaixo os que você vai utilizar:
 
-- `iniciar`: Inicia todos os componentes, incluindo a aplicação de streaming usando Docker Compose.
-- `parar`: Para todos os componentes.
+- `start`: Inicia todos os componentes, incluindo a aplicação de streaming usando Docker Compose.
+- `stop`: Para todos os componentes.
 - `gerar-operacao-debito`: Cria uma operação de débito no tópico de entrada.
 - `gerar-operacao-credito`: Cria uma operação de crédito no tópico de entrada.
 - `ver-msg-rejeitadas`: Lista todas as operações rejeitadas.
