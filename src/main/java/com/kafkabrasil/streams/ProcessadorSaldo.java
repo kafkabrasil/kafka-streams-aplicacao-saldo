@@ -1,3 +1,5 @@
+package com.kafkabrasil.streams;
+
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -9,16 +11,17 @@ import java.util.Properties;
 
 public class ProcessadorSaldo {
     public static void main(String[] args) {
+        criarStreams();
     }
 
     private static Properties configurarStreams(){
         final Properties streamsConfiguration = new Properties();
         // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
         // against which the application is run.
-        streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "anomaly-detection-lambda-example");
-        streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "anomaly-detection-lambda-example-client");
+        streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, System.getenv("APPLICATION_ID"));
+        streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, System.getenv("APPLICATION_ID")+"-client");
         // Where to find Kafka broker(s).
-        streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "");
+        streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("BOOTSTRAP_SERVERS"));
         // Specify default (de)serializers for record keys and for record values.
         streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class);
         streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class);
@@ -32,17 +35,15 @@ public class ProcessadorSaldo {
     private static void criarStreams(){
         final StreamsBuilder builder = new StreamsBuilder();
         // Create a stream from the input topic
-        KStream<String, String> inputStream = builder.stream("input-topic");
+        KStream<String, String> inputStream = builder.stream(System.getenv("INPUT_TOPIC"));
 
         // Process the stream
         KStream<String, String> processedStream = inputStream.mapValues(value -> {
-            // Process the value (e.g., parse JSON, perform calculations)
-//            return processValue(value);
-            return null;
+            return value+" - Processed";
         });
 
         // Write the processed stream to the output topic
-        processedStream.to("output-topic");
+        processedStream.to(System.getenv("OUTPUT_TOPIC"));
 
         // Build the topology
         final Topology topology = builder.build();
