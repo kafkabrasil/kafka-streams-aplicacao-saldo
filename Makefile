@@ -19,4 +19,5 @@ start:
 stop:
 	@echo "Parando todos os containers do projeto ..."
 	@docker-compose down --remove-orphans
+	@rm -rf ./kafka_data ./zoo_data
 	@echo "Todos os containers foram parados."

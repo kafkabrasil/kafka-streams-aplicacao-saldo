@@ -8,11 +8,18 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     volumes:
       - ./zoo_data:/var/lib/zookeeper/data
+    healthcheck:
+      test: nc -z localhost 2181 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   broker:
-    image: confluentinc/cp-server:7.2.1
+    image: confluentinc/cp-kafka:7.2.1
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
+        restart: true
     ports:
       - "9092:9092"
     environment:
@@ -26,10 +33,24 @@ services:
       KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
       KAFKA_JMX_HOSTNAME: localhost
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
     volumes:
       - ./kafka_data:/var/lib/kafka/data
+
+  create-topic:
+    image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      - broker
+    entrypoint: /bin/bash -c "echo 'Waiting for Kafka to be ready...' && \
+      cub kafka-ready -b broker:29092 1 20 && \
+      echo 'Creating topics...' && \
+      kafka-topics --create --topic in_topic --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
+      kafka-topics --create --topic out_topic --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
+      echo 'Topics created.'"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
 
   akhq:
     image: tchiotludo/akhq:0.25.0
@@ -41,6 +62,20 @@ services:
               properties:
                 bootstrap.servers: "broker:29092"
     depends_on:
-      - broker
+      - create-topic
     ports:
       - 8080:8080
+
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      create-topic:
+        condition: service_completed_successfully
+        restart: true
+    environment:
+      - BOOTSTRAP_SERVERS=broker:29092
+      - INPUT_TOPIC=in_topic
+      - OUTPUT_TOPIC=out_topic
+      - APPLICATION_ID=streams
