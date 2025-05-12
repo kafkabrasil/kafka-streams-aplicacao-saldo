@@ -7,6 +7,7 @@ help:
 	@echo "Uso:"
 	@echo "  make start     Inicia o projeto usando Docker Compose"
 	@echo "  make stop       Para todos os containers do projeto"
+	@echo "  make cleanup    Remove todos os dados do projeto"
 	
 
 .PHONY: start
@@ -19,5 +20,10 @@ start:
 stop:
 	@echo "Parando todos os containers do projeto ..."
 	@docker-compose down --remove-orphans
-	@rm -rf ./kafka_data ./zoo_data
 	@echo "Todos os containers foram parados."
+
+.PHONY: cleanup
+cleanup:
+	@echo "Removendo todos os dados do projeto ..."
+	@rm -rf ./kafka_data ./zoo_data
+	@echo "Todos os dados foram removidos."

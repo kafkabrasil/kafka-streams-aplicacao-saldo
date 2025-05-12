@@ -25,4 +25,4 @@ Usamos `Make` para realizar todas as operações no projeto. Se você digitar `m
 - `ver-msg-rejeitadas`: Lista todas as operações rejeitadas.
 - `ver-saldo-cliente`: Mostra o saldo de um cliente.
 - `ver-extrato-cliente`: Mostra o extrato de um cliente.
-- `limpar-dados`: Limpa todos os dados e reinicia os serviços.
+- `cleanup`: Limpa todos os dados e reinicia os serviços.
