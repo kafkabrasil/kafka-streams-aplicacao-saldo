@@ -1,0 +1,5 @@
+.idea
+target
+kafka_data
+zoo_data
+.vscode
